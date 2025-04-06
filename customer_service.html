@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support | SmartDonation+</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #32A87D;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --dark-bg: #0a0a0a;
+        }
+
+        body {
+            margin: 0;
+            padding: 80px 20px 20px;
+            min-height: 100vh;
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .support-container {
+            max-width: 600px;
+            margin: 0 auto;
+            animation: slideIn 1s ease-out;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"] {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-info {
+            text-align: center;
+            padding: 2rem;
+            background: var(--glass-bg);
+            border-radius: 15px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .chatbot-icon {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .chatbot-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="support-container animate__animated animate__fadeInUp">
+        <div class="glass-card">
+            <h1 style="text-align: center; margin-bottom: 2rem;">Contact Support</h1>
+            <form id="supportForm">
+                <div>
+                    <label>Your Email</label>
+                    <input type="email" id="supportEmail" required>
+                </div>
+                <div>
+                    <label>Message</label>
+                    <textarea id="supportMessage" rows="5" required></textarea>
+                </div>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+
+        <div class="contact-info animate__animated animate__fadeIn">
+            <h2>24/7 Support</h2>
+            <p>📧 support@smartdonation.plus</p>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>🌍 Global Assistance Center</p>
+        </div>
+    </div>
+
+    <div class="chatbot-icon animate__animated animate__bounceIn">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" 
+             alt="Chatbot" 
+             style="width: 100%; height: 100%;">
+    </div>
+
+    <script>
+        document.getElementById('supportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('supportEmail').value;
+            const message = document.getElementById('supportMessage').value;
+
+            try {
+                const response = await fetch('/api/support', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    },
+                    body: JSON.stringify({ email, message })
+                });
+
+                if (response.ok) {
+                    alert('Message sent successfully!');
+                    document.getElementById('supportForm').reset();
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>     

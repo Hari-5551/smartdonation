@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartDonation+</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a0a0a;
+            --secondary: #32A87D;
+            --accent: #FFC845;
+            --light: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+            padding-top: 70px; 
+        }
+
+        /* Navbar Styling */
+        .nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 25px;
+            z-index: 100;
+            background-color: rgba(96, 95, 95, 0.475); /* Semi-transparent background */
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.4); /* Optional: Adds shadow for depth */
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav a:hover {
+            color: var(--accent); /* Hover effect with accent color */
+            transform: scale(1.1); /* Slight zoom effect */
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(10,10,10,0.7) 0%, rgba(10,10,10,1) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ffffff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            animation: fadeInUp 1s ease 0.2s forwards;
+            opacity: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            animation: fadeInUp 3s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .btn:hover {
+            background-color: #2a8e6a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            padding: 100px 20px;
+            background-color: #0f0f0f;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .feature-desc {
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+
+        .gallery {
+            padding: 100px 20px;
+            background-color: #0a0a0a;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 300px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 20px;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }* Add this new gallery section styling */
+        .impact-gallery {
+            padding: 100px 20px;
+            background-color: #0a0a0a;
+        }
+        
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .impact-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 400px;
+            transition: transform 0.3s ease;
+        }
+        
+        .impact-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .impact-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .impact-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+        }
+        
+        /* Chatbot Icon */
+        .chatbot-icon {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .chatbot-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-icon img {
+            width: 100%;
+            height: 100%;
+            filter: invert(1);
+        }
+
+        /* Chatbot Modal */
+        .chatbot-modal {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .chatbot-modal.open {
+            transform: translateY(0);
+        }
+
+        .chatbot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chatbot-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .chatbot-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbot-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 10px;
+        }
+
+        .chat-message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            font-size: 1rem;
+            max-width: 80%;
+        }
+
+        .chat-message.user {
+            background-color: #32A87D;
+            align-self: flex-end;
+        }
+
+        .chat-message.bot {
+            background-color: #444;
+            align-self: flex-start;
+        }
+
+        .chat-message.typing {
+            background-color: transparent;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        .chatbot-input {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chatbot-input input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .chatbot-input button {
+            padding: 10px 20px;
+            background-color: #32A87D;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .chatbot-input button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Accessibility: Focus styles */
+        .chatbot-input input:focus, .chatbot-input button:focus {
+            outline: 3px solid #FFD700; /* Golden focus outline */
+            background-color: #333; /* Slight background change for focus */
+        }
+    </style>
+</head>
+<body>
+<body>
+    <div class="nav animate__animated animate__fadeInDown">
+        <a href="nonprofit.html">organizations</a>
+        <a href="database.html">database</a>
+        <a href="customer_service.html">service</a>
+        
+    </div>
+
+    <section class="hero" id="home">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        
+        <div class="hero-content">
+            <h1 class="animate__animated animate__fadeIn">SmartDonation+</h1>
+            <a href="donate.html" class="btn animate__animated animate__pulse animate__infinite">Donate Now</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2 class="section-title animate__animated animate__fadeIn">Our Features</h2>
+        <div class="features-grid">
+            <div class="feature-card animate__animated animate__fadeInUp">
+                <div class="feature-icon">🤖</div>
+                <h3 class="feature-title">AI-Powered Matching</h3>
+                <p class="feature-desc">Our advanced algorithms connect donors with the most suitable causes for maximum impact.</p>
+            </div>
+            
+            <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">Verified Impact</h3>
+                <p class="feature-desc">See the real-world results of your donations through AI-verified images and geo-tagging.</p>
+            </div>
+            
+            <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                <div class="feature-icon">🔄</div>
+                <h3 class="feature-title">Hybrid Donations</h3>
+                <p class="feature-desc">Contribute both cash and physical items through our flexible donation system.</p>
+            </div>
+            
+            <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+                <div class="feature-icon">🖼️</div>
+                <h3 class="feature-title">NFT Recognition</h3>
+                <p class="feature-desc">Receive unique NFTs as tokens of appreciation for your generous contributions.</p>
+            </div>
+            
+            <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.8s;">
+                <div class="feature-icon">🌐</div>
+                <h3 class="feature-title">DAO Allocation</h3>
+                <p class="feature-desc">Community-driven fund distribution through decentralized autonomous organizations.</p>
+            </div>
+            
+            <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 1s;">
+                <div class="feature-icon">📦</div>
+                <h3 class="feature-title">Smart Logistics</h3>
+                <p class="feature-desc">AI-optimized distribution ensures your donations reach those in need efficiently.</p>
+            </div>
+        </div>
+    </section>
+    <section class="impact-gallery" id="impact">
+        <h2 class="section-title animate__animated animate__fadeIn">Our Impact</h2>
+        <div class="impact-grid">
+            <div class="impact-card animate__animated animate__fadeInUp">
+                <img src="https://images.pexels.com/photos/6995301/pexels-photo-6995301.jpeg" alt="Community Support">
+                <div class="impact-overlay">
+                    <h3>Community Empowerment</h3>
+                    <p>Direct support for local initiatives</p>
+                </div>
+            </div>
+            
+            <div class="impact-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <img src="https://images.pexels.com/photos/6995221/pexels-photo-6995221.jpeg" alt="Food Distribution">
+                <div class="impact-overlay">
+                    <h3>Food Relief Programs</h3>
+                    <p>Daily meals for families in need</p>
+                </div>
+            </div>
+            
+            <div class="impact-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                <img src="https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg" alt="Education Support">
+                <div class="impact-overlay">
+                    <h3>Education Initiatives</h3>
+                    <p>School supplies and infrastructure</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+
+   
+        
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        
+          
+    </footer>
+
+    <!-- Chatbot Section -->
+    <div class="chatbot-icon animate__animated animate__bounceIn" 
+    style="position: fixed; right: 20px; bottom: 20px; width: 50px; height: 50px; cursor: pointer;">
+   <img src="https://cdn-icons-png.flaticon.com/128/17115/17115944.png" 
+        alt="Chatbot" 
+        style="width: 100%; height: 100%; filter: invert(1);"  onclick="openChatbot()" >
+    </div>
+
+    <div id="chatbotModal">
+        <div class="chatbot-header">
+            
+            <button onclick="closeChatbot()">×</button>
+        </div>
+        <div id="chatbotContent"></div>
+        <div class="chatbot-input">
+            <input type="text" id="userInput" placeholder="Ask me anything...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Chatbot functionality
+        const API_KEY = 'AIzaSyBmYW5s-LidtqO0lVzGUyrmfvC3iS99_8I';
+
+        function openChatbot() {
+            document.getElementById('chatbotModal').style.display = 'block';
+        }
+
+        function closeChatbot() {
+            document.getElementById('chatbotModal').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            const chatbotContent = document.getElementById('chatbotContent');
+
+            if (!userInput.trim()) return;
+
+            chatbotContent.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+            
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: userInput }] }] })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I couldn't understand that. Please try again.";
+                chatbotContent.innerHTML += `<p><strong>Assistant:</strong> ${responseText}</p>`;
+            })
+            .catch(error => {
+                chatbotContent.innerHTML += `<p><strong>Error:</strong> ${error.message}</p>`;
+            });
+
+            document.getElementById('userInput').value = '';
+            chatbotContent.scrollTop = chatbotContent.scrollHeight;
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Form submission handling
+        document.getElementById('donationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your donation! We will contact you shortly.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

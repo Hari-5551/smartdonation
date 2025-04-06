@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Donation | SmartDonation+</title>
+    <style>
+        :root {
+            --primary: #32A87D;
+            --secondary: #2C3E50;
+            --accent: #FF6B6B;
+            --light: #F8F9FA;
+            --dark: #212529;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light) 0%, #DFE9F3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .donation-card {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .header h1 {
+            color: var(--secondary);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #6C757D;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #E9ECEF;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(50, 168, 125, 0.25);
+        }
+
+        .dynamic-section {
+            background: #F8F9FA;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        button[type="submit"] {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        button[type="submit"]:hover {
+            background: #2A8F6D;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .donation-card {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="donation-card">
+        <div class="header">
+            <h1>Support Our Cause</h1>
+            <p>Your generosity makes a real difference in people's lives</p>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <form id="donation-form">
+            <div class="form-group">
+                <label>Donation Type</label>
+                <select name="itemType" id="itemType" required>
+                    <option value="">Select Donation Type</option>
+                    <option value="money">Financial Donation</option>
+                    <option value="food">Food Items</option>
+                    <option value="clothes">Clothing</option>
+                    <option value="household">Household Goods</option>
+                </select>
+            </div>
+
+            <div id="money-fields" class="dynamic-section" style="display: none;">
+                <div class="form-group">
+                    <label>Amount (USD)</label>
+                    <input type="number" name="amount" min="1" placeholder="Enter amount" required>
+                </div>
+            </div>
+
+            <div id="inkind-fields" class="dynamic-section" style="display: none;">
+                <div class="form-group">
+                    <label>Item Description</label>
+                    <textarea name="itemDescription" rows="3" placeholder="Describe the items you're donating" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Condition</label>
+                    <input type="text" name="itemCondition" placeholder="New, Used (Good Condition), etc." required>
+                </div>
+                <div class="form-group">
+                    <label>Upload Photo</label>
+                    <input type="file" name="itemImage" accept="image/*" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="donorName" required placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" name="location" required placeholder="City, State">
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" required placeholder="john@example.com">
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" name="phoneNumber" required placeholder="+1 234 567 8900">
+            </div>
+
+            <button type="submit">Submit Donation</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('donation-form');
+            const messageContainer = document.getElementById('messageContainer');
+            const itemType = document.getElementById('itemType');
+            const moneyFields = document.getElementById('money-fields');
+            const inkindFields = document.getElementById('inkind-fields');
+    
+            const updateFields = () => {
+                const type = itemType.value;
+                moneyFields.style.display = type === 'money' ? 'block' : 'none';
+                inkindFields.style.display = (type && type !== 'money') ? 'block' : 'none';
+            };
+            
+            itemType.addEventListener('change', updateFields);
+            updateFields();
+    
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                messageContainer.innerHTML = '';
+    
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showMessage('Please login to continue', 'error');
+                    return window.location.href = 'Login.html';
+                }
+    
+                const formData = new FormData(form);
+                const type = formData.get('itemType');
+                
+                // Client-side validation
+                if (!type) {
+                    showMessage('Please select a donation type', 'error');
+                    return;
+                }
+    
+                if (type === 'money' && !formData.get('amount')) {
+                    showMessage('Please enter donation amount', 'error');
+                    return;
+                }
+    
+                if (type !== 'money') {
+                    if (!formData.get('itemDescription') || !formData.get('itemCondition')) {
+                        showMessage('Please provide item description and condition', 'error');
+                        return;
+                    }
+                    if (!formData.get('itemImage')) {
+                        showMessage('Please upload at least one item photo', 'error');
+                        return;
+                    }
+                }
+    
+                try {
+                    const response = await fetch('/api/donations', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+    
+                    // Handle non-JSON responses
+                    const contentType = response.headers.get('content-type');
+                    const data = contentType?.includes('application/json') 
+                        ? await response.json()
+                        : { error: await response.text() };
+    
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Donation failed');
+                    }
+    
+                    // Redirect to confirmation page
+                    window.location.href = `/confirmation.html?id=${data.donationId}`;
+    
+                } catch (error) {
+                    console.error('Donation Error:', error);
+                    showMessage(`❌ Error: ${error.message}`, 'error');
+                }
+            });
+    
+            function showMessage(message, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                messageDiv.textContent = message;
+                messageContainer.appendChild(messageDiv);
+    
+                setTimeout(() => messageDiv.remove(), 5000);
+            }
+        });
+    </script>
+</body>
+</html>

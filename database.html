@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Information | SmartDonation+</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(4,0,4,1) 0%, rgba(33,5,48,1) 90%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #e91e63;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .auth-section {
+            display: grid;
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .auth-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h2 {
+            color: #00bcd4;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00bcd4;
+            background: rgba(0, 188, 212, 0.1);
+        }
+
+        button {
+            background: #e91e63;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #c2185b;
+            transform: translateY(-2px);
+        }
+
+        .toggle-btn {
+            background: #00bcd4;
+            width: auto;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        #ngo-create-form {
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NGO Portal</h1>
+        <div class="auth-section">
+            <div class="auth-card">
+                <h2>Existing Organization Login</h2>
+                <form id="ngo-login-form" onsubmit="handleLogin(event)">
+                    <input type="email" id="login-email" placeholder="Organization Email" required>
+                    <input type="password" id="login-password" placeholder="Secure Password" required>
+                    <button type="submit">Access Dashboard</button>
+                </form>
+            </div>
+
+            <div class="auth-card">
+                <h2>New Organization Registration</h2>
+                <button class="toggle-btn" onclick="toggleCreateAccount()">Start Registration</button>
+                <form id="ngo-create-form" style="display: none;">
+                    <input type="text" id="org-name" placeholder="Legal Organization Name" required>
+                    <input type="number" id="year-build" placeholder="Year of Establishment" min="1900" max="2023" required>
+                    <input type="email" id="create-email" placeholder="Official Email Address" required>
+                    <input type="tel" id="phone" placeholder="Verified Contact Number" required>
+                    <input type="password" id="create-password" placeholder="Create Secure Password" required>
+                    <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+                    <button type="button" onclick="createAccount()">Register Organization</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keep existing JavaScript unchanged -->
+
+    <script>
+        function toggleCreateAccount() {
+            document.getElementById('ngo-create-form').style.display = 'block';
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const res = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                window.location.href = 'ngo_dashboard.html';
+            } else {
+                alert('Invalid login details');
+            }
+        }
+
+        async function createAccount() {
+            const orgName = document.getElementById('org-name').value;
+            const yearBuild = document.getElementById('year-build').value;
+            const email = document.getElementById('create-email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('create-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            const res = await fetch('http://localhost:5000/create-account', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ organization_name: orgName, year_of_build: yearBuild, email, phone, password })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+        }
+    </script>
+</body>
+</html>

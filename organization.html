@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Portal | Phenomenon Studio Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #0F172A;
+            --secondary: #1E293B;
+            --accent: #6366F1;
+            --text: #F8FAFC;
+            --gradient: linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #EC4899 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background: var(--secondary);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .fund-card {
+            position: relative;
+            background: var(--gradient);
+            padding: 2.5rem;
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .fund-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .request-btn {
+            background: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .request-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(99,102,241,0.3);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15,23,42,0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--secondary);
+            padding: 2.5rem;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            border: 2px solid #334155;
+            border-radius: 12px;
+            color: var(--text);
+            transition: border-color 0.3s ease;
+        }
+
+        .file-upload {
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .file-upload input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--primary);
+            border-radius: 12px;
+            border: 2px dashed #334155;
+        }
+
+        .chart-container {
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+        }
+
+        .request-history {
+            margin-top: 2rem;
+        }
+
+        .request-item {
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid #334155;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15,23,42,0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div>
+                <h1>Green Earth Foundation</h1>
+                <p class="text-muted">Organization Dashboard</p>
+            </div>
+            <button class="request-btn" onclick="openRequestForm()">+ New Request</button>
+        </header>
+
+        <div class="fund-card">
+            <h2 class="fund-amount">$15,000.00</h2>
+            <p>Available Funds</p>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="fundUsageChart" width="300" height="300"></canvas>
+        </div>
+
+        <div class="request-history">
+            <h3>Recent Requests</h3>
+            <div id="requestsList"></div>
+        </div>
+    </div>
+
+    <!-- Request Modal -->
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal-content">
+            <h2>Create New Request</h2>
+            <form id="requestForm" onsubmit="submitRequest(event)">
+                <div class="form-group">
+                    <label class="form-label">Need Description</label>
+                    <textarea class="form-input" name="description" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amount Requested</label>
+                    <input type="number" class="form-input" name="amount" required>
+                </div>
+
+                <div class="form-group">
+                    <div class="file-upload">
+                        <input type="file" id="fileInput" accept=".pdf,.doc,.docx">
+                        <label class="file-upload-label">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            Upload Supporting Document
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="request-btn">Submit Request</button>
+                    <button type="button" class="request-btn" onclick="closeRequestForm()" 
+                            style="background: #334155; margin-left: 1rem">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        let requests = JSON.parse(localStorage.getItem('requests')) || [];
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeChart();
+            renderRequests();
+        });
+
+        function openRequestForm() {
+            const modal = document.getElementById('requestModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('modal-active'), 10);
+        }
+
+        function closeRequestForm() {
+            const modal = document.getElementById('requestModal');
+            modal.classList.remove('modal-active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        async function submitRequest(event) {
+            event.preventDefault();
+            showLoading();
+            
+            const formData = new FormData(event.target);
+            const fileInput = document.querySelector('input[type="file"]');
+            
+            const newRequest = {
+                description: formData.get('description'),
+                amount: formData.get('amount'),
+                date: new Date().toLocaleDateString(),
+                status: 'Pending',
+                attachments: fileInput.files[0] ? {
+                    name: fileInput.files[0].name,
+                    size: fileInput.files[0].size
+                } : null
+            };
+
+            // Simulated API call delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            requests = [newRequest, ...requests];
+            localStorage.setItem('requests', JSON.stringify(requests));
+            
+            hideLoading();
+            renderRequests();
+            closeRequestForm();
+            event.target.reset();
+        }
+
+        function renderRequests() {
+            const container = document.getElementById('requestsList');
+            container.innerHTML = requests.map(request => `
+                <div class="request-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center">
+                        <div>
+                            <h4>${request.description}</h4>
+                            <p>$${request.amount} • ${request.date}</p>
+                            ${request.attachments ? `<p>📎 ${request.attachments.name}</p>` : ''}
+                        </div>
+                        <span style="color: ${request.status === 'Approved' ? '#4CAF50' : '#FFC107'}">
+                            ${request.status}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('fundUsageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Approved Requests', 'Pending Requests', 'Available Funds'],
+                    datasets: [{
+                        data: [8500, 2000, 4500],
+                        backgroundColor: ['#6366F1', '#A855F7', '#EC4899']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#F8FAFC' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('requestModal')) {
+                closeRequestForm();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartDonation+ | Tech-Driven Philanthropy</title>
+    <style>
+        :root {
+            --primary: #0a0a0a;
+            --secondary: #32A87D;
+            --accent: #FFC845;
+            --light: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle, rgba(10,10,10,1) 0%, rgba(25,25,25,1) 100%);
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+
+        .glass-card h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .glass-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--accent);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 200, 69, 0.4);
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            animation: float 6s infinite alternate ease-in-out;
+        }
+
+        .floating-1 { top: -30px; left: -40px; }
+        .floating-2 { bottom: -30px; right: -40px; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(15px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <h1>SmartDonation+</h1><br/>
+        
+<a class="btn" href="main.html">Get Started</a>
+    </div>
+</body>
+</html>
